@@ -1,0 +1,3 @@
+include ':JAVA'
+include ':app'
+rootProject.name = "Audio Recipe"
