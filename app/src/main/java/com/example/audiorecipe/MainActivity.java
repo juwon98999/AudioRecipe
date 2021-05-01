@@ -72,8 +72,13 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+<<<<<<< HEAD
         mainscroll = (ScrollView)findViewById(R.id.mainsc);
         mainscroll.setHorizontalScrollBarEnabled(true);
+=======
+        //mainscroll = (ScrollView)findViewById(R.id.mainsc);
+        //mainscroll.setHorizontalScrollBarEnabled(true);
+>>>>>>> fb93df90610c0b1baa78995190a8b37832961cae
 
 
         recipe = (Button) findViewById(R.id.recipepage1);
