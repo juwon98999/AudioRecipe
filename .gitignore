@@ -1,10 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
 # Created by https://www.toptal.com/developers/gitignore/api/androidstudio
 # Edit at https://www.toptal.com/developers/gitignore?templates=androidstudio
 
 ### AndroidStudio ###
 # Covers files to be ignored for android development using Android Studio.
 
+>>>>>>> fb93df90610c0b1baa78995190a8b37832961cae
 # Built application files
 *.apk
 *.ap_
@@ -107,4 +110,8 @@ lint/tmp/
 .externalNativeBuild
 .cxx
 local.properties
+<<<<<<< HEAD
+>>>>>>> cc02101 (Scroll View 메인화면 적용)
+=======
 >>>>>>> dc10473 (Android Recipe 1.2 Version)
+>>>>>>> fb93df90610c0b1baa78995190a8b37832961cae
