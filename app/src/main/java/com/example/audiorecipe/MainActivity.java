@@ -12,11 +12,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.audiorecipe.Catejava.Catesetting;
 import com.example.audiorecipe.Fragment.MyAdapter;
+import com.example.audiorecipe.Recipe.RecipeMusic;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -72,8 +72,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        //mainscroll = (ScrollView)findViewById(R.id.mainsc);
-        //mainscroll.setHorizontalScrollBarEnabled(true);
+        mainscroll = (ScrollView)findViewById(R.id.mainsc);
+        mainscroll.setHorizontalScrollBarEnabled(true);
 
 
         recipe = (Button) findViewById(R.id.recipepage1);

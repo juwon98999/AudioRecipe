@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.audiorecipe.R;
-import com.example.audiorecipe.RecipeMusic;
+import com.example.audiorecipe.Recipe.RecipeMusic;
 
 import androidx.appcompat.app.AppCompatActivity;
 

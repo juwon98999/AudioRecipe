@@ -1,8 +1,4 @@
-package com.example.audiorecipe;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+package com.example.audiorecipe.Recipe;
 
 import android.Manifest;
 import android.content.Context;
@@ -18,25 +14,28 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
-import android.view.View;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.ScrollView;
-import android.widget.Scroller;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.audiorecipe.R;
 
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
-public class RecipeMusic extends AppCompatActivity {
+public class RecipeDetail extends AppCompatActivity {
 
     MediaPlayer mp;
     int pos;
@@ -66,7 +65,9 @@ public class RecipeMusic extends AppCompatActivity {
     BitmapDrawable bitmap;
 
 
-    class MyThread extends Thread {
+
+
+    class DetailThread extends Thread {
         @Override
         public void run() { // 쓰레드가 시작되면 콜백되는 메서드
             // 씨크바 막대기 조금씩 움직이기 (노래 끝날 때까지 반복)
@@ -81,7 +82,7 @@ public class RecipeMusic extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.recipetest);
+        setContentView(R.layout.recipedetailtest);
 
         scrollView = (ScrollView)findViewById(R.id.scroll);
         ImageView imageView = (ImageView)findViewById(R.id.imageView);
@@ -98,11 +99,10 @@ public class RecipeMusic extends AppCompatActivity {
 
         cThis = this;
 
-        mp = MediaPlayer.create(RecipeMusic.this, R.raw.testsound);
+        mp = MediaPlayer.create(RecipeDetail.this, R.raw.testsound);
         bStart = (Button)findViewById(R.id.Start);
         bPause = (Button)findViewById(R.id.pause);
         text1 = (TextView)findViewById(R.id.time);
-
 
 
         sb = (SeekBar)findViewById(R.id.sebar);
@@ -112,7 +112,7 @@ public class RecipeMusic extends AppCompatActivity {
                 int ttt = seekBar.getProgress(); // 사용자가 움직여놓은 위치
                 mp.seekTo(ttt);
                 mp.start();
-                new MyThread().start();
+                new DetailThread().start();
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
                 isPlaying = false;
@@ -145,7 +145,7 @@ public class RecipeMusic extends AppCompatActivity {
 
                 int a = mp.getDuration(); // 노래의 재생시간(miliSecond)
                 sb.setMax(a);// 씨크바의 최대 범위를 노래의 재생시간으로 설정
-                new MyThread().start(); // 씨크바 그려줄 쓰레드 시작
+                new DetailThread().start(); // 씨크바 그려줄 쓰레드 시작
                 isPlaying = true; // 씨크바 쓰레드 반복 하도록
 
 
@@ -187,9 +187,10 @@ public class RecipeMusic extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 System.out.println("-------------------------------------- 음성인식 시작!");
+                txtInMsg.setVisibility(View.INVISIBLE);
                 if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO) !=
                         PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(RecipeMusic.this, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
+                    ActivityCompat.requestPermissions(RecipeDetail.this, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
                     //권한을 허용하지 않는 경우
                 } else {
                     //권한을 허용한 경우
@@ -212,6 +213,7 @@ public class RecipeMusic extends AppCompatActivity {
                 btnSttStart.setVisibility(View.INVISIBLE);
             }
         };
+
         Timer timer = new Timer(true);
         TimerTask timerTask = new TimerTask() {
             @Override
@@ -280,7 +282,7 @@ public class RecipeMusic extends AppCompatActivity {
             txtInMsg.setText( rs[0] + "\r\n" + txtInMsg.getText() );
             FuncVoicdOrderCheck(rs[0]);
 
-            mRecognizer.startListening(sttIntent); //음성인식이 계속 되는 구문이니 필요에 맞게 쓰시길 바람
+            mRecognizer.startListening(sttIntent); //음성인식이 계속 되는 구문
         }
     };
 
@@ -295,7 +297,7 @@ public class RecipeMusic extends AppCompatActivity {
 
             int a = mp.getDuration(); // 노래의 재생시간(miliSecond)
             sb.setMax(a);// 씨크바의 최대 범위를 노래의 재생시간으로 설정
-            new MyThread().start(); // 씨크바 그려줄 쓰레드 시작
+            new DetailThread().start(); // 씨크바 그려줄 쓰레드 시작
             isPlaying = true; // 씨크바 쓰레드 반복 하도록
             FuncVoiceOut("재생 되었습니다.");  //재생시 연속으로 여러개가 재생되는현상 수정해야함 현재는 음성인식시 자동종료되는 오류발생
         }
@@ -346,7 +348,7 @@ public class RecipeMusic extends AppCompatActivity {
             super.onBackPressed();
         } else {
             backPressedTime = tempTime;
-            Toast.makeText(getApplicationContext(), "한번 더누르면 메인화면으로 돌아갑니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "재료 손질 파트로 돌아갑니다..", Toast.LENGTH_SHORT).show();  //백프레스트 메세지 출력
 
 
         }
@@ -360,6 +362,4 @@ public class RecipeMusic extends AppCompatActivity {
             mp.release(); // 자원해제
         }
     }
-
-
 }
