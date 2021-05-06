@@ -6,8 +6,17 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.speech.RecognitionListener;
@@ -31,23 +40,26 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-public class RecipeDetail extends AppCompatActivity {
+public class RecipeDetail extends AppCompatActivity implements SensorEventListener {
 
     MediaPlayer mp;
     int pos;
     private Button bStart;
     private Button bPause;
+    private Button bplus; //5초후
+    private Button bminus; //5초전
     SeekBar sb; // 음악 재생위치를 나타내는 시크바
     boolean isPlaying = false; // 재생중인지 확인할 변수
 
     TextView text1;
 
 
-    private final long FINISH_INTERVAL_TIME = 2000;
+    private final long FINISH_INTERVAL_TIME = 10000000;
     private long backPressedTime = 0;
 
     Context cThis;
@@ -58,12 +70,29 @@ public class RecipeDetail extends AppCompatActivity {
 
     TextToSpeech tts;
 
-    Button btnSttStart;
-    EditText txtInMsg;   //음성인식 서버 메세지창
+    Button ttsBtn;      //tts 버튼 숨기기
+    EditText txtInMsg;   //음성인식 메세지창
 
     ScrollView scrollView;
     BitmapDrawable bitmap;
 
+    private SensorManager sensormanager;    //온도센서
+    private Sensor sensorTemp;
+    private boolean isTempratureSensorAvailble;
+    TextView mtemp;
+    private Sensor sensorLight; //조도 센서
+    private boolean isLightAvailble;
+
+    SoundPool sp; //효과음
+    int fireSoundID;
+    int alramSoundID;
+
+    private static final long START_TIMT_IN_MILLIS = 300000; //시간초 입력
+    private TextView counttext;
+    private Button countbtn;
+    private CountDownTimer downTimer;
+    private boolean timerRunning;
+    private long timeinmillis = START_TIMT_IN_MILLIS;
 
 
 
@@ -71,21 +100,82 @@ public class RecipeDetail extends AppCompatActivity {
         @Override
         public void run() { // 쓰레드가 시작되면 콜백되는 메서드
             // 씨크바 막대기 조금씩 움직이기 (노래 끝날 때까지 반복)
-            while(isPlaying) {
+            while (isPlaying) {
                 sb.setProgress(mp.getCurrentPosition());
             }
         }
     }
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recipedetailtest);
+        ActionBar actionBar = getSupportActionBar(); //액션바 숨기기
+        actionBar.hide();
 
-        scrollView = (ScrollView)findViewById(R.id.scroll);
-        ImageView imageView = (ImageView)findViewById(R.id.imageView);
+
+        //사운드 풀
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_ALARM)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build();
+
+            sp = new SoundPool.Builder()
+                    .setMaxStreams(2)
+                    .setAudioAttributes(audioAttributes)
+                    .build();
+        }else
+        {
+            SoundPool timesp = new SoundPool(1, AudioManager.STREAM_ALARM,
+                    0);
+        }
+        fireSoundID = sp.load(this, R.raw.siren, 1);
+        alramSoundID = sp.load(this, R.raw.timeralarm, 1);
+
+
+        counttext = findViewById(R.id.conut);
+        countbtn = findViewById(R.id.timer);
+
+        countbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (timerRunning) {
+                    Timerpause();
+                    timerRunning = false;
+                } else {
+                    TimerStart();
+                    mp.pause();
+                    timerRunning = true;
+                }
+            }
+        });
+
+
+        mtemp = (TextView) findViewById(R.id.temp); //주변온도 측정기
+        sensormanager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        sensorTemp = sensormanager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+        if (sensormanager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
+            isTempratureSensorAvailble = true;
+            //success
+        } else {
+            mtemp.setText("Sensor is not Availble");
+            isTempratureSensorAvailble = false;
+            //fail
+        }
+        sensorLight = sensormanager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        if (sensormanager.getDefaultSensor(Sensor.TYPE_LIGHT) != null) {
+            isLightAvailble = true;
+            //success
+        } else {
+            isLightAvailble = false;
+            //fail
+        }
+
+
+        scrollView = (ScrollView) findViewById(R.id.scroll);
+        ImageView imageView = (ImageView) findViewById(R.id.imageView);
         scrollView.setHorizontalScrollBarEnabled(true);
 
         Resources res = getResources();
@@ -100,27 +190,31 @@ public class RecipeDetail extends AppCompatActivity {
         cThis = this;
 
         mp = MediaPlayer.create(RecipeDetail.this, R.raw.testsound);
-        bStart = (Button)findViewById(R.id.Start);
-        bPause = (Button)findViewById(R.id.pause);
-        text1 = (TextView)findViewById(R.id.time);
+        bStart = (Button) findViewById(R.id.Start);
+        bPause = (Button) findViewById(R.id.pause);
+        bplus = (Button) findViewById(R.id.plusbtn);
+        bminus = (Button) findViewById(R.id.minusbtn);
+        text1 = (TextView) findViewById(R.id.time);
 
 
-        sb = (SeekBar)findViewById(R.id.sebar);
+        sb = (SeekBar) findViewById(R.id.sebar);
         sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 isPlaying = true;
                 int ttt = seekBar.getProgress(); // 사용자가 움직여놓은 위치
                 mp.seekTo(ttt);
                 mp.start();
-                new DetailThread().start();
+                new RecipeDetail.DetailThread().start();
             }
+
             public void onStartTrackingTouch(SeekBar seekBar) {
                 isPlaying = false;
                 mp.pause();
             }
-            public void onProgressChanged(SeekBar seekBar,int progress,boolean fromUser) {
 
-                if(fromUser) {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+                if (fromUser) {
                     mp.seekTo(progress);
                 }
 
@@ -129,7 +223,7 @@ public class RecipeDetail extends AppCompatActivity {
                 String strTime = String.format("%02d:%02d", m, s);
                 text1.setText(strTime);
 
-                if (seekBar.getMax()==progress) {
+                if (seekBar.getMax() == progress) {
                     isPlaying = false;
                     mp.stop();
                 }
@@ -143,12 +237,10 @@ public class RecipeDetail extends AppCompatActivity {
                 mp.setLooping(false); // true:무한반복
                 mp.start(); // 노래 재생 시작
 
-                int a = mp.getDuration(); // 노래의 재생시간(miliSecond)
-                sb.setMax(a);// 씨크바의 최대 범위를 노래의 재생시간으로 설정
-                new DetailThread().start(); // 씨크바 그려줄 쓰레드 시작
+                int pos = mp.getDuration(); // 노래의 재생시간(miliSecond)
+                sb.setMax(pos);// 씨크바의 최대 범위를 노래의 재생시간으로 설정
+                new RecipeDetail.DetailThread().start(); // 씨크바 그려줄 쓰레드 시작
                 isPlaying = true; // 씨크바 쓰레드 반복 하도록
-
-
             }
         });
 
@@ -162,6 +254,33 @@ public class RecipeDetail extends AppCompatActivity {
             }
         });
 
+        bplus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 5초후
+                isPlaying = true;
+                int pos = mp.getCurrentPosition();
+                int duration = mp.getDuration();
+                if(mp.isPlaying() && duration != pos){
+                    pos = pos + 5000;
+                    mp.seekTo(pos);
+                }
+            }
+        });
+
+        bminus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 5초전
+                isPlaying = true;
+                int pos = mp.getCurrentPosition();
+                int duration = mp.getDuration();
+                if(mp.isPlaying() && duration != pos) {
+                    pos = pos - 5000;
+                    mp.seekTo(pos);
+                }
+            }
+        });
 
 
         sttIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -181,50 +300,9 @@ public class RecipeDetail extends AppCompatActivity {
             }
         });
 
-        btnSttStart = (Button) findViewById(R.id.ttsbtn);
-        btnSttStart.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View view) {
-                System.out.println("-------------------------------------- 음성인식 시작!");
-                txtInMsg.setVisibility(View.INVISIBLE);
-                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO) !=
-                        PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(RecipeDetail.this, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
-                    //권한을 허용하지 않는 경우
-                } else {
-                    //권한을 허용한 경우
-                    try {
-                        mRecognizer.startListening(sttIntent);
-                    } catch (SecurityException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
+        ttsBtn = (Button) findViewById(R.id.ttsbtn1);
+        ttsBtn.setVisibility(View.INVISIBLE);
         txtInMsg = (EditText) findViewById(R.id.txtMsg);
-
-
-        //5초마다 반복실행
-        final Handler handler = new Handler(){
-            public  void  handleMessage(Message msg){
-                btnSttStart.performClick();
-                btnSttStart.setVisibility(View.INVISIBLE);
-            }
-        };
-
-        Timer timer = new Timer(true);
-        TimerTask timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                Message msg = handler.obtainMessage();
-                handler.sendMessage(msg);
-            }
-            @Override
-            public boolean cancel() {return super.cancel();}
-        };
-        timer.schedule(timerTask, 0 , 5000);
 
     }
 
@@ -279,30 +357,30 @@ public class RecipeDetail extends AppCompatActivity {
             mResult.toArray(rs);
 
             Log.i(LogTT, "입력값 : " + rs[0]);
-            txtInMsg.setText( rs[0] + "\r\n" + txtInMsg.getText() );
+            txtInMsg.setText(rs[0] + "\r\n" + txtInMsg.getText());
             FuncVoicdOrderCheck(rs[0]);
 
-            mRecognizer.startListening(sttIntent); //음성인식이 계속 되는 구문
+            mRecognizer.startListening(sttIntent);
         }
     };
 
-    private void FuncVoicdOrderCheck(String VoiceMsg){
-        if(VoiceMsg.length() < 1) return;
+    private void FuncVoicdOrderCheck(String VoiceMsg) {
+        if (VoiceMsg.length() < 1) return;
 
-        VoiceMsg = VoiceMsg.replace(" ","");
+        VoiceMsg = VoiceMsg.replace(" ", "");
 
-        if(VoiceMsg.indexOf("재생해줘") > -1 || VoiceMsg.indexOf("재생") > -1){
+        if (VoiceMsg.indexOf("재생해줘") > -1 || VoiceMsg.indexOf("재생") > -1) {
             mp.setLooping(false); // true:무한반복
             mp.start(); // 노래 재생 시작
 
             int a = mp.getDuration(); // 노래의 재생시간(miliSecond)
             sb.setMax(a);// 씨크바의 최대 범위를 노래의 재생시간으로 설정
-            new DetailThread().start(); // 씨크바 그려줄 쓰레드 시작
+            new RecipeDetail.DetailThread().start(); // 씨크바 그려줄 쓰레드 시작
             isPlaying = true; // 씨크바 쓰레드 반복 하도록
             FuncVoiceOut("재생 되었습니다.");  //재생시 연속으로 여러개가 재생되는현상 수정해야함 현재는 음성인식시 자동종료되는 오류발생
         }
 
-        if(VoiceMsg.indexOf("정지해줘") > -1 || VoiceMsg.indexOf("일시정지") > -1){
+        if (VoiceMsg.indexOf("정지해줘") > -1 || VoiceMsg.indexOf("일시정지") > -1) {
             Log.i(LogTT, "메세지 확인 : 일시정지");
             pos = mp.getCurrentPosition();
             mp.pause(); // 일시중지
@@ -313,8 +391,8 @@ public class RecipeDetail extends AppCompatActivity {
 
     }
 
-    private void FuncVoiceOut(String OutMsg){
-        if(OutMsg.length() < 1) return;
+    private void FuncVoiceOut(String OutMsg) {
+        if (OutMsg.length() < 1) return;
 
         tts.setPitch(1.5f);
         tts.setSpeechRate(1.0f);
@@ -348,18 +426,107 @@ public class RecipeDetail extends AppCompatActivity {
             super.onBackPressed();
         } else {
             backPressedTime = tempTime;
-            Toast.makeText(getApplicationContext(), "재료 손질 파트로 돌아갑니다..", Toast.LENGTH_SHORT).show();  //백프레스트 메세지 출력
+            Toast.makeText(getApplicationContext(), "한번 더누르면 메인화면으로 돌아갑니다.", Toast.LENGTH_SHORT).show();
 
 
         }
     }
 
     @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE) {
+            mtemp.setText("온도: " + event.values[0] + "℃");
+
+            if (event.values[0] > 70.0f) {
+                mtemp.setText("화재발생!!");
+                sp.play(fireSoundID,1,1,1,-1,1);
+            }
+        }
+
+        if(event.sensor.getType() == Sensor.TYPE_LIGHT){
+            if(event.values[0] < 50.0f){
+                System.out.println("-------------------------------------- 음성인식 시작!");
+                txtInMsg.setVisibility(View.INVISIBLE);
+                AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE); //음성인식 사운드 제거
+                audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true); //사운드 제거
+                audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO) !=
+                        PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(RecipeDetail.this, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
+                    //권한을 허용하지 않는 경우
+                } else {
+                    //권한을 허용한 경우
+                    try {
+                        mRecognizer.startListening(sttIntent);
+                    } catch (SecurityException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isTempratureSensorAvailble) {
+            sensormanager.registerListener(this, sensorTemp, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        if (isLightAvailble) {
+            sensormanager.registerListener(this, sensorLight, SensorManager.SENSOR_DELAY_FASTEST);
+        }
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
+        if (isTempratureSensorAvailble) {
+            sensormanager.unregisterListener(this);
+        }
         isPlaying = false; // 쓰레드 정지
-        if (mp!=null) {
+        if (mp != null) {
             mp.release(); // 자원해제
         }
     }
+
+
+    private void TimerStart(){
+        downTimer = new CountDownTimer(timeinmillis, 1000) {
+            @Override
+            public void onTick(long millisuntilFinsihed) {
+                timeinmillis = millisuntilFinsihed;
+                updateCountDownText();
+            }
+
+            @Override
+            public void onFinish() {
+                timerRunning = false;
+                countbtn.setText("타이머재생");
+                sp.play(alramSoundID,1,1,1,0,1);
+            }
+        }.start();
+        timerRunning = true;
+        countbtn.setText("타이머정지");
+    }
+
+    private  void Timerpause(){
+        downTimer.cancel();
+        countbtn.setText("타이머재생");
+    }
+    private void updateCountDownText(){
+        int hours = (int) (timeinmillis/ (1000*60*60)) % 60;
+        int minutes = (int) (timeinmillis / (1000*60)) % 60;
+        int seconds = (int) (timeinmillis / 1000) % 60;
+
+        String timeFormatted = String.format(Locale.getDefault(), "%02d:%02d:%02d",hours,minutes, seconds);
+        counttext.setText(timeFormatted);
+    }
+
+
 }
+

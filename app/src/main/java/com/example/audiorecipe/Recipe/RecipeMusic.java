@@ -1,5 +1,6 @@
 package com.example.audiorecipe.Recipe;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -60,6 +61,8 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
     int pos;
     private Button bStart;
     private Button bPause;
+    private Button bplus; //5초후
+    private Button bminus; //5초전
     SeekBar sb; // 음악 재생위치를 나타내는 시크바
     boolean isPlaying = false; // 재생중인지 확인할 변수
 
@@ -77,18 +80,20 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
 
     TextToSpeech tts;
 
-    Button btnSttStart;
-    EditText txtInMsg;   //음성인식 서버 메세지창
+    Button ttsBtn;      //tts 버튼 숨기기
+    EditText txtInMsg;   //음성인식 메세지창
 
     ScrollView scrollView;
     BitmapDrawable bitmap;
 
-    private Button nextbtn; //다음파트로 이동
+    private Button nextBtn; //다음파트로 이동
 
     private SensorManager sensormanager;    //온도센서
-    private Sensor sensor;
+    private Sensor sensorTemp;
     private boolean isTempratureSensorAvailble;
     TextView mtemp;
+    private Sensor sensorLight; //조도 센서
+    private boolean isLightAvailble;
 
     SoundPool sp; //효과음
     int fireSoundID;
@@ -100,6 +105,7 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
     private CountDownTimer downTimer;
     private boolean timerRunning;
     private long timeinmillis = START_TIMT_IN_MILLIS;
+
 
 
     class MyThread extends Thread {
@@ -117,6 +123,8 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recipetest);
+        ActionBar actionBar = getSupportActionBar(); //액션바 숨기기
+        actionBar.hide();
 
 
         //사운드 풀
@@ -126,10 +134,10 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
                     .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                     .build();
 
-                    sp = new SoundPool.Builder()
-                            .setMaxStreams(2)
-                            .setAudioAttributes(audioAttributes)
-                            .build();
+            sp = new SoundPool.Builder()
+                    .setMaxStreams(2)
+                    .setAudioAttributes(audioAttributes)
+                    .build();
         }else
         {
             SoundPool timesp = new SoundPool(1, AudioManager.STREAM_ALARM,
@@ -159,13 +167,21 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
 
         mtemp = (TextView) findViewById(R.id.temp); //주변온도 측정기
         sensormanager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        sensor = sensormanager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+        sensorTemp = sensormanager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
         if (sensormanager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
             isTempratureSensorAvailble = true;
             //success
         } else {
-            mtemp.setText("Temperature Sensor is not Availble");
+            mtemp.setText("Sensor is not Availble");
             isTempratureSensorAvailble = false;
+            //fail
+        }
+        sensorLight = sensormanager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        if (sensormanager.getDefaultSensor(Sensor.TYPE_LIGHT) != null) {
+            isLightAvailble = true;
+            //success
+        } else {
+            isLightAvailble = false;
             //fail
         }
 
@@ -185,16 +201,12 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
 
         cThis = this;
 
-        mp = MediaPlayer.create(RecipeMusic.this, R.raw.testsound);
-        bStart = (Button) findViewById(R.id.Start);
-        bPause = (Button) findViewById(R.id.pause);
-        bPause.setVisibility(View.INVISIBLE);
-        text1 = (TextView) findViewById(R.id.time);
 
-        nextbtn = (Button) findViewById(R.id.ttsbtn);
+        nextBtn = (Button) findViewById(R.id.nextbtn);
 
 
-        nextbtn.setOnClickListener(new View.OnClickListener() {
+
+        nextBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -202,6 +214,15 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
                 startActivity(intent);
             }
         });
+
+
+        mp = MediaPlayer.create(RecipeMusic.this, R.raw.testsound);
+        bStart = (Button) findViewById(R.id.Start);
+        bPause = (Button) findViewById(R.id.pause);
+        bplus = (Button) findViewById(R.id.plusbtn);
+        bminus = (Button) findViewById(R.id.minusbtn);
+        text1 = (TextView) findViewById(R.id.time);
+
 
         sb = (SeekBar) findViewById(R.id.sebar);
         sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -243,12 +264,12 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
                 mp.setLooping(false); // true:무한반복
                 mp.start(); // 노래 재생 시작
 
-                int a = mp.getDuration(); // 노래의 재생시간(miliSecond)
-                sb.setMax(a);// 씨크바의 최대 범위를 노래의 재생시간으로 설정
+                int pos = mp.getDuration(); // 노래의 재생시간(miliSecond)
+                sb.setMax(pos);// 씨크바의 최대 범위를 노래의 재생시간으로 설정
                 new MyThread().start(); // 씨크바 그려줄 쓰레드 시작
                 isPlaying = true; // 씨크바 쓰레드 반복 하도록
 
-                bStart.setVisibility(View.INVISIBLE);
+                bStart.setVisibility(View.VISIBLE);
                 bPause.setVisibility(View.VISIBLE);
             }
         });
@@ -262,7 +283,35 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
                 isPlaying = false; // 쓰레드 정지
 
                 bStart.setVisibility(View.VISIBLE);
-                bPause.setVisibility(View.INVISIBLE);
+                bPause.setVisibility(View.VISIBLE);
+            }
+        });
+
+        bplus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 5초후
+                isPlaying = true;
+                int pos = mp.getCurrentPosition();
+                int duration = mp.getDuration();
+                if(mp.isPlaying() && duration != pos){
+                    pos = pos + 5000;
+                    mp.seekTo(pos);
+                }
+            }
+        });
+
+        bminus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 5초전
+                isPlaying = true;
+                int pos = mp.getCurrentPosition();
+                int duration = mp.getDuration();
+                if(mp.isPlaying() && duration != pos) {
+                    pos = pos - 5000;
+                    mp.seekTo(pos);
+                }
             }
         });
 
@@ -284,56 +333,9 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
             }
         });
 
-        btnSttStart = (Button) findViewById(R.id.ttsbtn1);
-        btnSttStart.setSoundEffectsEnabled(false);
-        btnSttStart.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                System.out.println("-------------------------------------- 음성인식 시작!");
-                txtInMsg.setVisibility(View.INVISIBLE);
-                AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE); //음성인식 사운드 제거
-                audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true); //사운드 제거
-                audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
-                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO) !=
-                        PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(RecipeMusic.this, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
-                    //권한을 허용하지 않는 경우
-                } else {
-                    //권한을 허용한 경우
-                    try {
-                        mRecognizer.startListening(sttIntent);
-                    } catch (SecurityException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
+        ttsBtn = (Button) findViewById(R.id.ttsbtn1);
+        ttsBtn.setVisibility(View.INVISIBLE);
         txtInMsg = (EditText) findViewById(R.id.txtMsg);
-
-
-        //5초마다 반복실행
-        final Handler handler = new Handler() {
-            public void handleMessage(Message msg) {
-                btnSttStart.performClick();
-                btnSttStart.setVisibility(View.INVISIBLE);
-            }
-        };
-        Timer timer = new Timer(true);
-        TimerTask timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                Message msg = handler.obtainMessage();
-                handler.sendMessage(msg);
-            }
-
-            @Override
-            public boolean cancel() {
-                return super.cancel();
-            }
-        };
-        timer.schedule(timerTask, 0, 5000);
 
     }
 
@@ -391,7 +393,7 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
             txtInMsg.setText(rs[0] + "\r\n" + txtInMsg.getText());
             FuncVoicdOrderCheck(rs[0]);
 
-            mRecognizer.startListening(sttIntent); //음성인식이 계속 되는 구문이니 필요에 맞게 쓰시길 바람
+            mRecognizer.startListening(sttIntent);
         }
     };
 
@@ -468,14 +470,36 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
     }
 
     @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        Sensor sensor = sensorEvent.sensor;
-        if (sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE) {
-            mtemp.setText("온도: " + sensorEvent.values[0] + "℃");
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE) {
+            mtemp.setText("온도: " + event.values[0] + "℃");
+
+            if (event.values[0] > 70.0f) {
+                mtemp.setText("화재발생!!");
+                sp.play(fireSoundID,1,1,1,-1,1);
+            }
         }
-        if (sensorEvent.values[0] > 70.0f) {
-            mtemp.setText("화재발생!!");
-            sp.play(fireSoundID,1,1,1,-1,1);
+
+        if(event.sensor.getType() == Sensor.TYPE_LIGHT){
+            if(event.values[0] < 50.0f){
+                System.out.println("-------------------------------------- 음성인식 시작!");
+                txtInMsg.setVisibility(View.INVISIBLE);
+                AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE); //음성인식 사운드 제거
+                audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true); //사운드 제거
+                audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO) !=
+                        PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(RecipeMusic.this, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
+                    //권한을 허용하지 않는 경우
+                } else {
+                    //권한을 허용한 경우
+                    try {
+                        mRecognizer.startListening(sttIntent);
+                    } catch (SecurityException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
     }
 
@@ -484,7 +508,10 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
     protected void onResume() {
         super.onResume();
         if (isTempratureSensorAvailble) {
-            sensormanager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+            sensormanager.registerListener(this, sensorTemp, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        if (isLightAvailble) {
+            sensormanager.registerListener(this, sensorLight, SensorManager.SENSOR_DELAY_FASTEST);
         }
     }
 

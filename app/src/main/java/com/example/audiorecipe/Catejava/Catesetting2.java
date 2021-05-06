@@ -17,13 +17,9 @@ public class Catesetting2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.category2);
 
-        //액션바 설정하기//
-        //액션바 타이틀 변경하기
-        getSupportActionBar().setTitle("App");
-        //액션바 배경색 변경
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFF339999));
-        //홈버튼 표시
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("카테고리 메뉴 (찌개)"); //액션바 타이틀 변경
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFFFFD700)); //액션바 배경색 변경
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //홈버튼 표시
     }
 
     //액션버튼 메뉴 액션바에 집어 넣기

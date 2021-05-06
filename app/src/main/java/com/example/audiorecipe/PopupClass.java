@@ -55,5 +55,3 @@ public class PopupClass extends Activity {
     }
 }
 
-
-//출처: https://ghj1001020.tistory.com/9

@@ -2,18 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.audiorecipe">
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-feature
-        android:name="android.hardware.sensor.ambient_temperature"
-        android:required="false" />
-    <uses-feature
-        android:name="android.hardware.sensor.light"
-        android:required="false" />
+    <uses-feature android:name="android.hardware.sensor.ambient_temperature" android:required="true" />
+    <uses-feature android:name="android.hardware.sensor.light" android:required="true"/>
 
     <application
 
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="내귀에 레시피"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AudioRecipe">
@@ -26,11 +22,14 @@
         </activity>
         <activity android:name=".Recipe.RecipeMusic"></activity>
         <activity android:name=".Recipe.RecipeDetail"></activity>
+        <activity android:name=".Help"></activity>
+        <activity android:name=".Sign1"></activity>
         <activity android:name=".Catejava.Catesetting" android:parentActivityName=".MainActivity"></activity>
         <activity android:name=".Catejava.Catesetting2" android:parentActivityName=".MainActivity"></activity>
         <activity android:name=".Catejava.Catesetting3" android:parentActivityName=".MainActivity"></activity>
         <activity android:name=".Catejava.Catesetting4" android:parentActivityName=".MainActivity"></activity>
         <activity android:name=".Catejava.Catesetting5" android:parentActivityName=".MainActivity"></activity>
+
 
         <activity android:name=".PopupClass" android:theme="@android:style/Theme.Dialog" />
 
