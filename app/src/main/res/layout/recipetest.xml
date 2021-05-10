@@ -8,11 +8,11 @@
     android:paddingTop="5dp"
     tools:context=".Recipe.RecipeMusic">
 
-        <TextView
-            android:id="@+id/temp"
-            android:layout_width="150dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="250dp"/>
+    <TextView
+        android:id="@+id/temp"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="250dp"/>
 
 
     <LinearLayout
@@ -26,12 +26,13 @@
             android:layout_height="512dp">
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/imageView5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_launcher_foreground"
-                tools:layout_editor_absoluteX="106dp"
-                tools:layout_editor_absoluteY="495dp" />
+                android:layout_weight="1"
+                app:srcCompat="@drawable/kimchiggigaeimg1"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="30dp"/>
         </ScrollView>
     </LinearLayout>
 
@@ -71,17 +72,19 @@
             android:layout_marginBottom="20dp" />
 
         <Button
-            android:id="@+id/timer"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="10dp"
-            android:text="5분타이머" />
-
-        <Button
             android:id="@+id/ttsbtn1"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="음성인식 활성화" />
+
+        <ImageButton
+            android:id="@+id/timer1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/white"
+            app:srcCompat="@drawable/timerimg" />
+
 
     </LinearLayout>
 
@@ -91,34 +94,38 @@
         android:layout_height="50dp">
 
 
-        <Button
-            android:id="@+id/minusbtn"
-            android:layout_width="80dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="30dp"
-            android:text="5초전"/>
-
-        <Button
-            android:id="@+id/Start"
-            android:layout_width="80dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="10dp"
-            android:text="재생"/>
+        <ImageButton
+            android:id="@+id/minusbtn1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/white"
+            app:srcCompat="@drawable/ff" />
 
 
-        <Button
-            android:id="@+id/pause"
-            android:layout_width="80dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="10dp"
-            android:text="정지" />
+        <ImageButton
+            android:id="@+id/start1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/white"
+            app:srcCompat="@drawable/playimg" />
 
-        <Button
-            android:id="@+id/plusbtn"
-            android:layout_width="80dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="10dp"
-            android:text="5초후"/>
+        <ImageButton
+            android:id="@+id/pause1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/white"
+            app:srcCompat="@drawable/pauseimg" />
+
+        <ImageButton
+            android:id="@+id/plusbtn1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/white"
+            app:srcCompat="@drawable/rr" />
 
     </LinearLayout>
 
@@ -127,12 +134,14 @@
         android:layout_height="match_parent">
 
 
-        <Button
+        <ImageButton
             android:id="@+id/nextbtn"
             android:layout_width="100dp"
             android:layout_height="50dp"
+            android:layout_weight="1"
             android:layout_marginLeft="300dp"
-            android:text="다음파트" />
+            android:background="@color/white"
+            app:srcCompat="@drawable/nextpart" />
 
     </LinearLayout>
 

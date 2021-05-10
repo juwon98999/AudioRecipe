@@ -27,6 +27,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
@@ -49,10 +50,10 @@ public class RecipeDetail extends AppCompatActivity implements SensorEventListen
 
     MediaPlayer mp;
     int pos;
-    private Button bStart;
-    private Button bPause;
-    private Button bplus; //5초후
-    private Button bminus; //5초전
+    private ImageButton bStart;
+    private ImageButton bPause;
+    private ImageButton bplus; //5초후
+    private ImageButton bminus; //5초전
     SeekBar sb; // 음악 재생위치를 나타내는 시크바
     boolean isPlaying = false; // 재생중인지 확인할 변수
 
@@ -74,7 +75,6 @@ public class RecipeDetail extends AppCompatActivity implements SensorEventListen
     EditText txtInMsg;   //음성인식 메세지창
 
     ScrollView scrollView;
-    BitmapDrawable bitmap;
 
     private SensorManager sensormanager;    //온도센서
     private Sensor sensorTemp;
@@ -87,9 +87,9 @@ public class RecipeDetail extends AppCompatActivity implements SensorEventListen
     int fireSoundID;
     int alramSoundID;
 
-    private static final long START_TIMT_IN_MILLIS = 300000; //시간초 입력
+    private static final long START_TIMT_IN_MILLIS = 1800000; //시간초 입력
     private TextView counttext;
-    private Button countbtn;
+    private ImageButton countbtn;
     private CountDownTimer downTimer;
     private boolean timerRunning;
     private long timeinmillis = START_TIMT_IN_MILLIS;
@@ -136,7 +136,7 @@ public class RecipeDetail extends AppCompatActivity implements SensorEventListen
 
 
         counttext = findViewById(R.id.conut);
-        countbtn = findViewById(R.id.timer);
+        countbtn = (ImageButton) findViewById(R.id.timer1);
 
         countbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,25 +175,15 @@ public class RecipeDetail extends AppCompatActivity implements SensorEventListen
 
 
         scrollView = (ScrollView) findViewById(R.id.scroll);
-        ImageView imageView = (ImageView) findViewById(R.id.imageView);
         scrollView.setHorizontalScrollBarEnabled(true);
-
-        Resources res = getResources();
-        bitmap = (BitmapDrawable) res.getDrawable((R.drawable.testimg));
-        int bitmapWidth = bitmap.getIntrinsicWidth();
-        int bitmapHeight = bitmap.getIntrinsicHeight();
-
-        imageView.setImageDrawable(bitmap);
-        imageView.getLayoutParams().width = bitmapWidth;
-        imageView.getLayoutParams().height = bitmapHeight;
 
         cThis = this;
 
-        mp = MediaPlayer.create(RecipeDetail.this, R.raw.testsound);
-        bStart = (Button) findViewById(R.id.Start);
-        bPause = (Button) findViewById(R.id.pause);
-        bplus = (Button) findViewById(R.id.plusbtn);
-        bminus = (Button) findViewById(R.id.minusbtn);
+        mp = MediaPlayer.create(RecipeDetail.this, R.raw.kimchiggigaemp);
+        bStart = (ImageButton) findViewById(R.id.start1);
+        bPause = (ImageButton) findViewById(R.id.pause1);
+        bplus = (ImageButton) findViewById(R.id.plusbtn1);
+        bminus = (ImageButton) findViewById(R.id.minusbtn1);
         text1 = (TextView) findViewById(R.id.time);
 
 
@@ -204,7 +194,7 @@ public class RecipeDetail extends AppCompatActivity implements SensorEventListen
                 int ttt = seekBar.getProgress(); // 사용자가 움직여놓은 위치
                 mp.seekTo(ttt);
                 mp.start();
-                new RecipeDetail.DetailThread().start();
+                new DetailThread().start();
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -239,7 +229,7 @@ public class RecipeDetail extends AppCompatActivity implements SensorEventListen
 
                 int pos = mp.getDuration(); // 노래의 재생시간(miliSecond)
                 sb.setMax(pos);// 씨크바의 최대 범위를 노래의 재생시간으로 설정
-                new RecipeDetail.DetailThread().start(); // 씨크바 그려줄 쓰레드 시작
+                new DetailThread().start(); // 씨크바 그려줄 쓰레드 시작
                 isPlaying = true; // 씨크바 쓰레드 반복 하도록
             }
         });
@@ -375,7 +365,7 @@ public class RecipeDetail extends AppCompatActivity implements SensorEventListen
 
             int a = mp.getDuration(); // 노래의 재생시간(miliSecond)
             sb.setMax(a);// 씨크바의 최대 범위를 노래의 재생시간으로 설정
-            new RecipeDetail.DetailThread().start(); // 씨크바 그려줄 쓰레드 시작
+            new DetailThread().start(); // 씨크바 그려줄 쓰레드 시작
             isPlaying = true; // 씨크바 쓰레드 반복 하도록
             FuncVoiceOut("재생 되었습니다.");  //재생시 연속으로 여러개가 재생되는현상 수정해야함 현재는 음성인식시 자동종료되는 오류발생
         }
@@ -388,6 +378,27 @@ public class RecipeDetail extends AppCompatActivity implements SensorEventListen
             FuncVoiceOut("일시정지 되었습니다.");
         }
 
+        if (VoiceMsg.indexOf("5초후") > -1 || VoiceMsg.indexOf("5초후로") > -1) {
+            Log.i(LogTT, "메세지 확인 : 5초후");
+            isPlaying = true;
+            int pos = mp.getCurrentPosition();
+            int duration = mp.getDuration();
+            if(mp.isPlaying() && duration != pos){
+                pos = pos + 5000;
+                mp.seekTo(pos);
+            }
+        }
+
+        if (VoiceMsg.indexOf("5초전") > -1 || VoiceMsg.indexOf("5초전으로") > -1) {
+            Log.i(LogTT, "메세지 확인 : 5초전");
+            isPlaying = true;
+            int pos = mp.getCurrentPosition();
+            int duration = mp.getDuration();
+            if(mp.isPlaying() && duration != pos) {
+                pos = pos - 5000;
+                mp.seekTo(pos);
+            }
+        }
 
     }
 
@@ -421,6 +432,7 @@ public class RecipeDetail extends AppCompatActivity implements SensorEventListen
     public void onBackPressed() {
         long tempTime = System.currentTimeMillis();
         long intervalTime = tempTime - backPressedTime;
+        timerRunning= false;
 
         if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
             super.onBackPressed();
@@ -506,17 +518,14 @@ public class RecipeDetail extends AppCompatActivity implements SensorEventListen
             @Override
             public void onFinish() {
                 timerRunning = false;
-                countbtn.setText("타이머재생");
                 sp.play(alramSoundID,1,1,1,0,1);
             }
         }.start();
         timerRunning = true;
-        countbtn.setText("타이머정지");
     }
 
     private  void Timerpause(){
         downTimer.cancel();
-        countbtn.setText("타이머재생");
     }
     private void updateCountDownText(){
         int hours = (int) (timeinmillis/ (1000*60*60)) % 60;

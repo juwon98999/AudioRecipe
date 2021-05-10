@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="5dp"
+    tools:context=".Recipe.Duruchigi">
+
+    <TextView
+        android:id="@+id/temp"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="250dp"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:layout_marginLeft="3dp">
+
+        <ScrollView
+            android:id="@+id/scroll"
+            android:layout_width="match_parent"
+            android:layout_height="512dp">
+
+            <ImageView
+                android:id="@+id/recipeview5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="30dp"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/duruchigiimg1" />
+        </ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <EditText
+            android:id="@+id/txtMsg"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+
+        <SeekBar
+            android:id="@+id/sebar"
+            android:layout_width="355dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="30dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginBottom="20dp" />
+
+        <TextView
+            android:id="@+id/conut"
+            android:layout_width="70dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="120dp"
+            android:layout_marginBottom="20dp" />
+
+        <Button
+            android:id="@+id/ttsbtn1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="음성인식 활성화" />
+
+        <ImageButton
+            android:id="@+id/timer1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/white"
+            app:srcCompat="@drawable/timerimg" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+
+        <ImageButton
+            android:id="@+id/minusbtn1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/white"
+            app:srcCompat="@drawable/ff" />
+
+
+        <ImageButton
+            android:id="@+id/start1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/white"
+            app:srcCompat="@drawable/playimg" />
+
+        <ImageButton
+            android:id="@+id/pause1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/white"
+            app:srcCompat="@drawable/pauseimg" />
+
+        <ImageButton
+            android:id="@+id/plusbtn1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/white"
+            app:srcCompat="@drawable/rr" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <ImageButton
+            android:id="@+id/nextbtn"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="300dp"
+            android:background="@color/white"
+            app:srcCompat="@drawable/nextpart" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

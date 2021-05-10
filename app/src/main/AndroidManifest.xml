@@ -6,9 +6,8 @@
     <uses-feature android:name="android.hardware.sensor.light" android:required="true"/>
 
     <application
-
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_icon"
         android:label="내귀에 레시피"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -22,19 +21,20 @@
         </activity>
         <activity android:name=".Recipe.RecipeMusic"></activity>
         <activity android:name=".Recipe.RecipeDetail"></activity>
+        <activity android:name=".Recipe.Remen"></activity>
+        <activity android:name=".Recipe.RemenDetail"></activity>
+        <activity android:name=".Recipe.Duruchigi"></activity>
+        <activity android:name=".Recipe.DuruchigiDetail"></activity>
         <activity android:name=".Help"></activity>
         <activity android:name=".Sign1"></activity>
+        <activity android:name=".Sign2"></activity>
+        <activity android:name=".Sign3"></activity>
         <activity android:name=".Catejava.Catesetting" android:parentActivityName=".MainActivity"></activity>
         <activity android:name=".Catejava.Catesetting2" android:parentActivityName=".MainActivity"></activity>
         <activity android:name=".Catejava.Catesetting3" android:parentActivityName=".MainActivity"></activity>
-        <activity android:name=".Catejava.Catesetting4" android:parentActivityName=".MainActivity"></activity>
-        <activity android:name=".Catejava.Catesetting5" android:parentActivityName=".MainActivity"></activity>
-
-
         <activity android:name=".PopupClass" android:theme="@android:style/Theme.Dialog" />
-
-
-
+        <activity android:name=".PopupClass2" android:theme="@android:style/Theme.Dialog" />
+        <activity android:name=".PopupClass3" android:theme="@android:style/Theme.Dialog" />
     </application>
 
 </manifest>

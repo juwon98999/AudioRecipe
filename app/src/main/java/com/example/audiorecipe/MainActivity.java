@@ -1,11 +1,9 @@
 package com.example.audiorecipe;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 import me.relex.circleindicator.CircleIndicator3;
@@ -21,16 +19,14 @@ import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.example.audiorecipe.Catejava.Catesetting;
 import com.example.audiorecipe.Fragment.MyAdapter;
-import com.example.audiorecipe.Recipe.RecipeDetail;
-import com.example.audiorecipe.Recipe.RecipeMusic;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -40,19 +36,23 @@ public class MainActivity extends AppCompatActivity {
     private final long FINISH_INTERVAL_TIME = 2000;
     private long backPressedTime = 0;
 
-    private Button recipe; //레시피
-    private Button cate; //카테고리
+    private ImageButton recipe; //레시피1
+    private ImageButton recipe2; //레시피2
+    private ImageButton recipe3; //레시피3
+    private ImageButton cate; //카테고리
 
-    private ViewPager2 mPager;      //이미지 슬라이드 관련 선언
+    private ViewPager2 mPager;  //Viewpager2 이미지 슬라이드
     private FragmentStateAdapter pagerAdapter;
     private int num_page = 3;
     private CircleIndicator3 mIndicator;
 
     ScrollView mainscroll;
 
-    Button popup1;
+    ImageButton popup1;
+    ImageButton popup2;
+    ImageButton popup3;
 
-    Button helpbtn;
+    ImageButton helpbtn;
 
 
     //음성인식
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     Intent sttIntent;
     SpeechRecognizer mRecognizer;
     TextToSpeech tts;
-    Button ttsBtn;      //tts 버튼 숨기기
+    ImageButton ttsBtn;      //tts 버튼 숨기기
     EditText txtInMsg;   //음성인식 메세지창
 
 
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar(); //액션바 숨기기
         actionBar.hide();
 
-        helpbtn = (Button) findViewById(R.id.helpPage); //도움말로 화면전환
+        helpbtn = (ImageButton) findViewById(R.id.helppage); //도움말로 화면전환
         helpbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        popup1 = (Button) findViewById(R.id.popupbtn1);
+        popup1 = (ImageButton) findViewById(R.id.popupbtn1);
 
         popup1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,9 +94,32 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        popup2 = (ImageButton) findViewById(R.id.popupbtn2);
+
+        popup2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), PopupClass2.class);
+                intent.putExtra("data", "요리재료 소개내용입니다.");
+                startActivityForResult(intent, 1);
+
+            }
+        });
+
+        popup3 = (ImageButton) findViewById(R.id.popupbtn3);
+
+        popup3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), PopupClass3.class);
+                intent.putExtra("data", "요리재료 소개내용입니다.");
+                startActivityForResult(intent, 1);
+            }
+        });
 
 
-        //이미지 슬라이드 관련
+
+        //Viewpager2 이미지 슬라이드
         mPager = findViewById(R.id.viewpager);  //ViewPager2
 
         pagerAdapter = new MyAdapter(this, num_page); //Adapter
@@ -112,21 +135,37 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        mainscroll = (ScrollView)findViewById(R.id.mainsc);
-        mainscroll.setHorizontalScrollBarEnabled(true);
-
-        mainscroll = (ScrollView)findViewById(R.id.mainsc);
-        mainscroll.setHorizontalScrollBarEnabled(true);
+        mainscroll = (ScrollView)findViewById(R.id.mainttsbtn);
+        mainscroll.setVerticalScrollBarEnabled(true);
 
 
-        recipe = (Button) findViewById(R.id.recipepage1);
-        cate = (Button) findViewById(R.id.categorypage);
+
+        recipe = (ImageButton) findViewById(R.id.recipepage1);
+        recipe2 = (ImageButton) findViewById(R.id.recipepage2);
+        recipe3 = (ImageButton) findViewById(R.id.recipepage3);
+        cate = (ImageButton) findViewById(R.id.categorypage);
 
         recipe.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), Sign1.class);
+                startActivity(intent);
+            }
+        });
+
+        recipe2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), Sign2.class);
+                startActivity(intent);
+            }
+        });
+
+        recipe3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), Sign3.class);
                 startActivity(intent);
             }
         });
@@ -158,28 +197,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        final float pageMargin= getResources().getDimensionPixelOffset(R.dimen.pageMargin);
-        final float pageOffset = getResources().getDimensionPixelOffset(R.dimen.offset);
-
-
-
-        //이미지 슬라이드 관련
-        mPager.setPageTransformer(new ViewPager2.PageTransformer() {
-            @Override
-            public void transformPage(@NonNull View page, float position) {
-                float myOffset = position * -(2 * pageOffset + pageMargin);
-                if (mPager.getOrientation() == ViewPager2.ORIENTATION_HORIZONTAL) {
-                    if (ViewCompat.getLayoutDirection(mPager) == ViewCompat.LAYOUT_DIRECTION_RTL) {
-                        page.setTranslationX(-myOffset);
-                    } else {
-                        page.setTranslationX(myOffset);
-                    }
-                } else {
-                    page.setTranslationY(myOffset);
-                }
-            }
-        });
-
         cThis = this;
 
         sttIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -199,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ttsBtn = (Button) findViewById(R.id.mainttsbtn);
+        ttsBtn = (ImageButton) findViewById(R.id.mainttsbtn1);
         ttsBtn.setVisibility(View.VISIBLE);
         txtInMsg = (EditText) findViewById(R.id.mainttstxt);
         ttsBtn.setOnClickListener(new View.OnClickListener(){
@@ -290,14 +307,39 @@ public class MainActivity extends AppCompatActivity {
 
         VoiceMsg = VoiceMsg.replace(" ", "");
 
-        if (VoiceMsg.indexOf("재생해줘") > -1 || VoiceMsg.indexOf("재생") > -1) {
-            Log.i(LogTT, "메세지 확인 : 재생"); //명령어 추가할것
-            FuncVoiceOut("재생 되었습니다.");  //재생시 연속으로 여러개가 재생되는현상 수정해야함 현재는 음성인식시 자동종료되는 오류발생
+        if (VoiceMsg.indexOf("카테고리검색") > -1 || VoiceMsg.indexOf("카테고리검색으로이동해줘") > -1) {
+            Intent intent = new Intent(getApplicationContext(), Catesetting.class);
+            startActivity(intent);
+            Log.i(LogTT, "메세지 확인 : 카테고리검색");
+            FuncVoiceOut("카테고리항목으로 이동 되었습니다.");
         }
 
-        if (VoiceMsg.indexOf("정지해줘") > -1 || VoiceMsg.indexOf("일시정지") > -1) {
-            Log.i(LogTT, "메세지 확인 : 일시정지");
-            FuncVoiceOut("일시정지 되었습니다.");
+        if (VoiceMsg.indexOf("도움말검색") > -1 || VoiceMsg.indexOf("도움말검색해줘") > -1) {
+            Intent intent = new Intent(getApplicationContext(),Help.class);
+            startActivity(intent);
+            Log.i(LogTT, "메세지 확인 : 도움말검색");
+            FuncVoiceOut("도움말로 이동 되었습니다.");
+        }
+
+        if (VoiceMsg.indexOf("라면검색") > -1 || VoiceMsg.indexOf("라면검색해줘") > -1) {
+            Intent intent = new Intent(getApplicationContext(), Sign1.class);
+            startActivity(intent);
+            Log.i(LogTT, "메세지 확인 : 라면검색");
+            FuncVoiceOut("라면 레시피로 이동되었습니다.");
+        }
+
+        if (VoiceMsg.indexOf("김치찌개검색") > -1 || VoiceMsg.indexOf("김치찌개검색해줘") > -1) {
+            Intent intent = new Intent(getApplicationContext(), Sign2.class);
+            startActivity(intent);
+            Log.i(LogTT, "메세지 확인 : 김치찌개검색");
+            FuncVoiceOut("김치찌개 레시피로 이동 되었습니다.");
+        }
+
+        if (VoiceMsg.indexOf("두루치기검색") > -1 || VoiceMsg.indexOf("두루치기검색해줘") > -1) {
+            Intent intent = new Intent(getApplicationContext(), Sign3.class);
+            startActivity(intent);
+            Log.i(LogTT, "메세지 확인 : 두루치기검색");
+            FuncVoiceOut("두루치기 레시피로 이동 되었습니다.");
         }
     }
 

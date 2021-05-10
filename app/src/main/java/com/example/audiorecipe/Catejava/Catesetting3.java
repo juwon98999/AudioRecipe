@@ -5,19 +5,36 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.audiorecipe.R;
+import com.example.audiorecipe.Sign3;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Catesetting3 extends AppCompatActivity {
+
+    ImageButton recipebtn3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.category3);
 
-        getSupportActionBar().setTitle("카테고리 메뉴 (양식)"); //액션바 타이틀 변경
+        recipebtn3 = (ImageButton) findViewById(R.id.menu3);
+
+        recipebtn3.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), Sign3.class);
+                startActivity(intent);
+            }
+        });
+
+        getSupportActionBar().setTitle("카테고리 메뉴 (고기)"); //액션바 타이틀 변경
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFFFFD700)); //액션바 배경색 변경
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //홈버튼 표시
     }
@@ -45,14 +62,6 @@ public class Catesetting3 extends AppCompatActivity {
         }
         if (id == R.id.item3) {
 
-        }
-        if (id == R.id.item4) {
-            Intent settingIntent = new Intent(this, Catesetting4.class);
-            startActivity(settingIntent);
-        }
-        if (id == R.id.item5) {
-            Intent settingIntent = new Intent(this, Catesetting5.class);
-            startActivity(settingIntent);
         }
 
         return super.onOptionsItemSelected(item);

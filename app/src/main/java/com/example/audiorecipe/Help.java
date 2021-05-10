@@ -4,13 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Help extends AppCompatActivity {
 
-    Button backbtn; //메인화면으로 화면전환
+    ImageButton backbtn; //메인화면으로 화면전환
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +20,7 @@ public class Help extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar(); //액션바 숨기기
         actionBar.hide();
 
-        backbtn = (Button) findViewById(R.id.mainbtn);
+        backbtn = (ImageButton) findViewById(R.id.mainbtn);
 
         backbtn.setOnClickListener(new View.OnClickListener() {
             @Override

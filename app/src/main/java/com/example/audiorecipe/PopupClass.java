@@ -6,42 +6,39 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class PopupClass extends Activity {
-    TextView txtText;
+    TextView viewText;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //타이틀바 없애기
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.popupmain);
 
-        //UI 객체생성
-        txtText = (TextView)findViewById(R.id.txtText);
 
-        //데이터 가져오기
-        Intent intent = getIntent();
-        String data = intent.getStringExtra("data");
-        txtText.setText(data);
+        viewText = (TextView)findViewById(R.id.popupview);
+        viewText.setText("대표적인 한국 요리 중 하나로, 김치를 넣고 얼큰하게 끓인 찌개이다.");
     }
 
-    //확인 버튼 클릭
+
     public void mOnClose(View v){
-        //데이터 전달하기
+
         Intent intent = new Intent();
         intent.putExtra("result", "Close Popup");
         setResult(RESULT_OK, intent);
 
-        //액티비티(팝업) 닫기
-        finish();
+
+        finish(); //팝업 닫기
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        //바깥레이어 클릭시 안닫히게
+
         if(event.getAction()==MotionEvent.ACTION_OUTSIDE){
             return false;
         }
@@ -50,7 +47,7 @@ public class PopupClass extends Activity {
 
     @Override
     public void onBackPressed() {
-        //안드로이드 백버튼 막기
+
         return;
     }
 }
