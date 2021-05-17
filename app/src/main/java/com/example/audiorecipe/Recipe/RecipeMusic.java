@@ -110,8 +110,7 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
 
     class MyThread extends Thread {
         @Override
-        public void run() { // 쓰레드가 시작되면 콜백되는 메서드
-            // 씨크바 막대기 조금씩 움직이기 (노래 끝날 때까지 반복)
+        public void run() {
             while (isPlaying) {
                 sb.setProgress(mp.getCurrentPosition());
             }
@@ -158,7 +157,6 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
                     timerRunning = false;
                 } else {
                     TimerStart();
-                    mp.pause();
                     timerRunning = true;
                 }
             }
@@ -252,13 +250,13 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
         bStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mp.setLooping(false); // true:무한반복
+                mp.setLooping(false);
                 mp.start(); // 노래 재생 시작
 
-                int pos = mp.getDuration(); // 노래의 재생시간(miliSecond)
-                sb.setMax(pos);// 씨크바의 최대 범위를 노래의 재생시간으로 설정
+                int pos = mp.getDuration();
+                sb.setMax(pos);
                 new MyThread().start(); // 씨크바 그려줄 쓰레드 시작
-                isPlaying = true; // 씨크바 쓰레드 반복 하도록
+                isPlaying = true;
 
                 bStart.setVisibility(View.VISIBLE);
                 bPause.setVisibility(View.VISIBLE);
@@ -384,7 +382,6 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
             txtInMsg.setText(rs[0] + "\r\n" + txtInMsg.getText());
             FuncVoicdOrderCheck(rs[0]);
 
-            mRecognizer.startListening(sttIntent);
         }
     };
 
@@ -394,14 +391,13 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
         VoiceMsg = VoiceMsg.replace(" ", "");
 
         if (VoiceMsg.indexOf("재생해줘") > -1 || VoiceMsg.indexOf("재생") > -1) {
-            mp.setLooping(false); // true:무한반복
+            mp.setLooping(false);
             mp.start(); // 노래 재생 시작
 
-            int a = mp.getDuration(); // 노래의 재생시간(miliSecond)
-            sb.setMax(a);// 씨크바의 최대 범위를 노래의 재생시간으로 설정
-            new MyThread().start(); // 씨크바 그려줄 쓰레드 시작
-            isPlaying = true; // 씨크바 쓰레드 반복 하도록
-            FuncVoiceOut("재생 되었습니다.");  //재생시 연속으로 여러개가 재생되는현상 수정해야함 현재는 음성인식시 자동종료되는 오류발생
+            int a = mp.getDuration();
+            sb.setMax(a);
+            new MyThread().start();
+            isPlaying = true;
         }
 
         if (VoiceMsg.indexOf("정지해줘") > -1 || VoiceMsg.indexOf("일시정지") > -1) {
@@ -468,6 +464,11 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
             mRecognizer.cancel();
             mRecognizer = null;
         }
+
+        if(sensormanager != null){
+            sensormanager.unregisterListener(this);
+            sensormanager = null;
+        }
     }
 
 
@@ -479,11 +480,10 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
 
         if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
             super.onBackPressed();
+
         } else {
             backPressedTime = tempTime;
             Toast.makeText(getApplicationContext(), "한번 더누르면 메인화면으로 돌아갑니다.", Toast.LENGTH_SHORT).show();
-
-
         }
     }
 
@@ -511,7 +511,8 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
                 audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
                 if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO) !=
                         PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(RecipeMusic.this, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
+                    ActivityCompat.requestPermissions(RecipeMusic.this, new String[]{Manifest.permission.RECORD_AUDIO},
+                            1);
                     //권한을 허용하지 않는 경우
                 } else {
                     //권한을 허용한 경우
@@ -545,7 +546,7 @@ public class RecipeMusic extends AppCompatActivity implements SensorEventListene
         }
         isPlaying = false; // 쓰레드 정지
         if (mp != null) {
-            mp.release(); // 자원해제
+            mp.release();
         }
     }
 

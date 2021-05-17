@@ -153,7 +153,6 @@ public class Remen extends AppCompatActivity implements SensorEventListener {
                     timerRunning = false;
                 } else {
                     TimerStart();
-                    mp.pause();
                     timerRunning = true;
                 }
             }
@@ -357,7 +356,6 @@ public class Remen extends AppCompatActivity implements SensorEventListener {
             txtInMsg.setText(rs[0] + "\r\n" + txtInMsg.getText());
             FuncVoicdOrderCheck(rs[0]);
 
-            mRecognizer.startListening(sttIntent);
         }
     };
 
@@ -370,11 +368,10 @@ public class Remen extends AppCompatActivity implements SensorEventListener {
             mp.setLooping(false); // true:무한반복
             mp.start(); // 노래 재생 시작
 
-            int a = mp.getDuration(); // 노래의 재생시간(miliSecond)
+            int a = mp.getDuration(); // 노래의 재생시간
             sb.setMax(a);// 씨크바의 최대 범위를 노래의 재생시간으로 설정
             new RemenThread().start(); // 씨크바 그려줄 쓰레드 시작
             isPlaying = true; // 씨크바 쓰레드 반복 하도록
-            FuncVoiceOut("재생 되었습니다.");  //재생시 연속으로 여러개가 재생되는현상 수정해야함 현재는 음성인식시 자동종료되는 오류발생
         }
 
         if (VoiceMsg.indexOf("정지해줘") > -1 || VoiceMsg.indexOf("일시정지") > -1) {
@@ -439,6 +436,11 @@ public class Remen extends AppCompatActivity implements SensorEventListener {
             mRecognizer.destroy();
             mRecognizer.cancel();
             mRecognizer = null;
+        }
+
+        if(sensormanager != null){
+            sensormanager.unregisterListener(this);
+            sensormanager = null;
         }
     }
 

@@ -227,7 +227,8 @@ public class MainActivity extends AppCompatActivity {
                 txtInMsg.setVisibility(View.INVISIBLE);
                 if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO) !=
                         PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECORD_AUDIO},
+                            1);
                     //권한을 허용하지 않는 경우
                 } else {
                     //권한을 허용한 경우
@@ -298,7 +299,6 @@ public class MainActivity extends AppCompatActivity {
             txtInMsg.setText(rs[0] + "\r\n" + txtInMsg.getText());
             FuncVoicdOrderCheck(rs[0]);
 
-            mRecognizer.startListening(sttIntent); //음성인식이 계속 되는 구문이니 필요에 맞게 쓰시길 바람
         }
     };
 
