@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.audiorecipe.Recipe.Remen;
 
@@ -12,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class Sign2 extends AppCompatActivity {
 
-    Button agreeBtn2;
+    ImageButton agreeBtn2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -22,7 +23,7 @@ public class Sign2 extends AppCompatActivity {
         actionBar.hide();
 
 
-        agreeBtn2 = (Button) findViewById(R.id.okbtn2);
+        agreeBtn2 = (ImageButton) findViewById(R.id.okbtn2);
 
         agreeBtn2.setOnClickListener(new View.OnClickListener() {
             @Override

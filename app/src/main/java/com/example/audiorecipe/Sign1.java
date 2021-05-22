@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.audiorecipe.Recipe.RecipeMusic;
 
@@ -13,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class Sign1 extends AppCompatActivity {
 
-    Button agreeBtn;
+    ImageButton agreeBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -23,7 +24,7 @@ public class Sign1 extends AppCompatActivity {
         actionBar.hide();
 
 
-        agreeBtn = (Button) findViewById(R.id.okbtn);
+        agreeBtn = (ImageButton) findViewById(R.id.okbtn);
 
         agreeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
