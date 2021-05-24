@@ -35,12 +35,12 @@ public class Catesetting extends AppCompatActivity {
         });
 
 
-        getSupportActionBar().setTitle("카테고리 메뉴 (찌개)"); //액션바 타이틀 변경
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFFFFD700)); //액션바 배경색 변경
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);   //홈버튼 표시
+        getSupportActionBar().setTitle("카테고리 메뉴 (찌개)");
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFFFFD700));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    //액션버튼 메뉴 액션바에 집어 넣기
+    //액션바
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -48,11 +48,11 @@ public class Catesetting extends AppCompatActivity {
     }
 
 
-    //액션버튼을 클릭했을때의 동작
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
-        //or switch문을 이용하면 될듯 하다.
+
 
         if (id == R.id.item1) {
 
