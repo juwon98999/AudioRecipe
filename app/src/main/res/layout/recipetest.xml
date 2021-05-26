@@ -82,7 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/white"
+            android:background="@android:color/transparent"
             app:srcCompat="@drawable/timerimg" />
 
 
@@ -99,7 +99,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/white"
+            android:background="@android:color/transparent"
             app:srcCompat="@drawable/ff" />
 
 
@@ -108,7 +108,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/white"
+            android:background="@android:color/transparent"
             app:srcCompat="@drawable/playimg" />
 
         <ImageButton
@@ -116,7 +116,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/white"
+            android:background="@android:color/transparent"
             app:srcCompat="@drawable/pauseimg" />
 
         <ImageButton
@@ -124,7 +124,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/white"
+            android:background="@android:color/transparent"
             app:srcCompat="@drawable/rr" />
 
     </LinearLayout>
@@ -140,7 +140,7 @@
             android:layout_height="50dp"
             android:layout_weight="1"
             android:layout_marginLeft="300dp"
-            android:background="@color/white"
+            android:background="@android:color/transparent"
             app:srcCompat="@drawable/nextpart" />
 
     </LinearLayout>

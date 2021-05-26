@@ -9,8 +9,10 @@ import androidx.viewpager2.widget.ViewPager2;
 import me.relex.circleindicator.CircleIndicator3;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
@@ -27,6 +29,8 @@ import android.widget.Toast;
 
 import com.example.audiorecipe.Catejava.Catesetting;
 import com.example.audiorecipe.Fragment.MyAdapter;
+import com.example.audiorecipe.MenualFragment.MenualActivity;
+import com.example.audiorecipe.MenualFragment.MenualAdapter;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -72,11 +76,22 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar(); //액션바 숨기기
         actionBar.hide();
 
+        SharedPreferences pref = getSharedPreferences("isFirst", Activity.MODE_PRIVATE);
+        boolean first = pref.getBoolean("isFirst", false);
+        if(first == false){
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putBoolean("isFirst", true);
+            editor.commit();
+
+            Intent intent = new Intent(getApplicationContext(), MenualActivity.class);
+            startActivity(intent);
+        }
+
         helpbtn = (ImageButton) findViewById(R.id.helppage); //도움말로 화면전환
         helpbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(),Help.class);
+                Intent intent = new Intent(getApplicationContext(),MenualActivity.class);
                 startActivity(intent);
             }
         });
@@ -315,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (VoiceMsg.indexOf("도움말검색") > -1 || VoiceMsg.indexOf("도움말검색해줘") > -1) {
-            Intent intent = new Intent(getApplicationContext(),Help.class);
+            Intent intent = new Intent(getApplicationContext(),MenualActivity.class);
             startActivity(intent);
             Log.i(LogTT, "메세지 확인 : 도움말검색");
             FuncVoiceOut("도움말로 이동 되었습니다.");

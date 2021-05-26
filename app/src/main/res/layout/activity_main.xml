@@ -42,6 +42,7 @@
                 android:layout_height="64dp"
                 android:layout_weight="1"
                 android:layout_marginTop="10dp"
+                android:background="@android:color/transparent"
                 app:srcCompat="@drawable/searchimg" />
 
             <ImageButton
@@ -51,6 +52,7 @@
                 android:layout_weight="1"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="10dp"
+                android:background="@android:color/transparent"
                 app:srcCompat="@drawable/helpimg" />
 
             <ImageButton
@@ -58,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="80dp"
                 android:layout_weight="1"
-                android:background="@color/white"
+                android:background="@android:color/transparent"
                 android:layout_marginLeft="10dp"
                 app:srcCompat="@drawable/sttimg" />
 
@@ -113,7 +115,7 @@
                 android:layout_width="139dp"
                 android:layout_height="189dp"
                 android:layout_weight="1"
-                android:background="@color/white"
+                android:background="@android:color/transparent"
                 app:srcCompat="@drawable/kimchiggigae" />
 
             <EditText
@@ -129,7 +131,7 @@
                 android:layout_height="189dp"
                 android:layout_weight="1"
                 android:layout_marginLeft="40dp"
-                android:background="@color/white"
+                android:background="@android:color/transparent"
                 app:srcCompat="@drawable/remen" />
 
 
@@ -157,7 +159,7 @@
                 android:layout_height="36dp"
                 android:layout_weight="1"
                 android:layout_marginLeft="5dp"
-                android:background="@color/white"
+                android:background="@android:color/transparent"
                 app:srcCompat="@drawable/popupimg" />
 
 
@@ -175,7 +177,7 @@
                 android:layout_height="36dp"
                 android:layout_weight="1"
                 android:layout_marginLeft="5dp"
-                android:background="@color/white"
+                android:background="@android:color/transparent"
                 app:srcCompat="@drawable/popupimg" />
 
         </LinearLayout>
@@ -191,7 +193,7 @@
                 android:layout_width="139dp"
                 android:layout_height="189dp"
                 android:layout_weight="1"
-                android:background="@color/white"
+                android:background="@android:color/transparent"
                 app:srcCompat="@drawable/duruchigiimg" />
 
 
@@ -219,7 +221,7 @@
                 android:layout_height="36dp"
                 android:layout_weight="1"
                 android:layout_marginLeft="5dp"
-                android:background="@color/white"
+                android:background="@android:color/transparent"
                 app:srcCompat="@drawable/popupimg" />
 
         </LinearLayout>

@@ -25,7 +25,6 @@
         <activity android:name=".Recipe.RemenDetail"></activity>
         <activity android:name=".Recipe.Duruchigi"></activity>
         <activity android:name=".Recipe.DuruchigiDetail"></activity>
-        <activity android:name=".Help"></activity>
         <activity android:name=".Sign1"></activity>
         <activity android:name=".Sign2"></activity>
         <activity android:name=".Sign3"></activity>
@@ -35,6 +34,8 @@
         <activity android:name=".PopupClass" android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".PopupClass2" android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".PopupClass3" android:theme="@android:style/Theme.Dialog" />
+        <activity android:name=".MenualFragment.MenualActivity"></activity>
+
     </application>
 
 </manifest>

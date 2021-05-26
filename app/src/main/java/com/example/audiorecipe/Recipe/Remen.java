@@ -80,7 +80,7 @@ public class Remen extends AppCompatActivity implements SensorEventListener {
     int fireSoundID;
     int alramSoundID;
 
-    private static final long START_TIMT_IN_MILLIS = 1800000; //시간초 입력
+    private static final long START_TIMT_IN_MILLIS = 180000; //시간초 입력
     private TextView counttext;
     private ImageButton countbtn;
     private CountDownTimer downTimer;
@@ -185,7 +185,7 @@ public class Remen extends AppCompatActivity implements SensorEventListener {
 
         cThis = this;
 
-        mp = MediaPlayer.create(Remen.this, R.raw.remenmp);
+        mp = MediaPlayer.create(Remen.this, R.raw.remen1);
         bStart = (ImageButton) findViewById(R.id.start1);
         bPause = (ImageButton) findViewById(R.id.pause1);
         bplus = (ImageButton) findViewById(R.id.plusbtn1);
@@ -258,7 +258,7 @@ public class Remen extends AppCompatActivity implements SensorEventListener {
                 int pos = mp.getCurrentPosition();
                 int duration = mp.getDuration();
                 if(mp.isPlaying() && duration != pos){
-                    pos = pos + 5000;
+                    pos = pos + 10000;
                     mp.seekTo(pos);
                 }
             }
@@ -272,7 +272,7 @@ public class Remen extends AppCompatActivity implements SensorEventListener {
                 int pos = mp.getCurrentPosition();
                 int duration = mp.getDuration();
                 if(mp.isPlaying() && duration != pos) {
-                    pos = pos - 5000;
+                    pos = pos - 10000;
                     mp.seekTo(pos);
                 }
             }
@@ -382,24 +382,24 @@ public class Remen extends AppCompatActivity implements SensorEventListener {
             FuncVoiceOut("일시정지 되었습니다.");
         }
 
-        if (VoiceMsg.indexOf("5초후") > -1 || VoiceMsg.indexOf("5초후로") > -1) {
-            Log.i(LogTT, "메세지 확인 : 5초후");
+        if (VoiceMsg.indexOf("앞으로") > -1 || VoiceMsg.indexOf("앞으로이동") > -1) {
+            Log.i(LogTT, "메세지 확인 : 앞으로");
             isPlaying = true;
             int pos = mp.getCurrentPosition();
             int duration = mp.getDuration();
             if(mp.isPlaying() && duration != pos){
-                pos = pos + 5000;
+                pos = pos + 10000;
                 mp.seekTo(pos);
             }
         }
 
-        if (VoiceMsg.indexOf("5초전") > -1 || VoiceMsg.indexOf("5초전으로") > -1) {
-            Log.i(LogTT, "메세지 확인 : 5초전");
+        if (VoiceMsg.indexOf("뒤로") > -1 || VoiceMsg.indexOf("뒤로이동") > -1) {
+            Log.i(LogTT, "메세지 확인 : 뒤로");
             isPlaying = true;
             int pos = mp.getCurrentPosition();
             int duration = mp.getDuration();
             if(mp.isPlaying() && duration != pos) {
-                pos = pos - 5000;
+                pos = pos - 10000;
                 mp.seekTo(pos);
             }
         }

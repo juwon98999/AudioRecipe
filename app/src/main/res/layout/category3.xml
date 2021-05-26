@@ -24,7 +24,7 @@
         android:id="@+id/menu3"
         android:layout_width="139dp"
         android:layout_height="189dp"
-        android:background="@color/white"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.172"
