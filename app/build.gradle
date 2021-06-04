@@ -6,7 +6,7 @@ android {
     compileSdkVersion 30
 
     defaultConfig {
-        applicationId "com.example.audiorecipe"
+        applicationId "com.AppProject.audiorecipe"
         minSdkVersion 23
         targetSdkVersion 29
         versionCode 1
