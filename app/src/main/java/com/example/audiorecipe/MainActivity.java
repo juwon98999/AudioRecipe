@@ -265,6 +265,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReadyForSpeech(Bundle params) {
             System.out.println("onReadyForSpeech.........................");
+            Toast.makeText(getApplicationContext(), "음성인식 실행 되었습니다.", Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -319,7 +320,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void FuncVoicdOrderCheck(String VoiceMsg) {
         if (VoiceMsg.length() < 1) return;
-
         VoiceMsg = VoiceMsg.replace(" ", "");
 
         if (VoiceMsg.indexOf("카테고리검색") > -1 || VoiceMsg.indexOf("카테고리검색으로이동해줘") > -1) {
@@ -337,14 +337,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (VoiceMsg.indexOf("라면검색") > -1 || VoiceMsg.indexOf("라면검색해줘") > -1) {
-            Intent intent = new Intent(getApplicationContext(), Sign1.class);
+            Intent intent = new Intent(getApplicationContext(), Sign2.class);
             startActivity(intent);
             Log.i(LogTT, "메세지 확인 : 라면검색");
             FuncVoiceOut("라면 레시피로 이동되었습니다.");
         }
 
         if (VoiceMsg.indexOf("김치찌개검색") > -1 || VoiceMsg.indexOf("김치찌개검색해줘") > -1) {
-            Intent intent = new Intent(getApplicationContext(), Sign2.class);
+            Intent intent = new Intent(getApplicationContext(), Sign1.class);
             startActivity(intent);
             Log.i(LogTT, "메세지 확인 : 김치찌개검색");
             FuncVoiceOut("김치찌개 레시피로 이동 되었습니다.");

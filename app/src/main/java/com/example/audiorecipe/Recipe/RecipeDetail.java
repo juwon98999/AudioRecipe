@@ -300,6 +300,7 @@ public class RecipeDetail extends AppCompatActivity implements SensorEventListen
         @Override
         public void onReadyForSpeech(Bundle params) {
             System.out.println("onReadyForSpeech.........................");
+            Toast.makeText(getApplicationContext(), "음성인식 실행 되었습니다.", Toast.LENGTH_SHORT).show();
         }
 
         @Override
