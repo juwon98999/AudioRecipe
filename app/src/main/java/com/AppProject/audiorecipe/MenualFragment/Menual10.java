@@ -21,17 +21,6 @@ public class Menual10 extends Fragment {
                 R.layout.menual_10p, container, false);
 
 
-
-        ImageButton imgbtn = (ImageButton) rootView.findViewById(R.id.homebtn);
-        imgbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), MainActivity.class);
-                startActivity(intent);
-            }
-        });
-
-
         return rootView;
 
     }

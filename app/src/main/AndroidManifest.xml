@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.AppProject.audiorecipe">
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-feature android:name="android.hardware.sensor.ambient_temperature" android:required="true" />
+    <uses-feature android:name="android.hardware.sensor.ambient_temperature" android:required="false" />
     <uses-feature android:name="android.hardware.sensor.light" android:required="true"/>
 
     <application

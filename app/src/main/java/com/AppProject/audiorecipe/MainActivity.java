@@ -388,6 +388,8 @@ public class MainActivity extends AppCompatActivity {
 
             if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
                 super.onBackPressed();
+                ActivityCompat.finishAffinity(this);
+                System.exit(0);
             } else {
                 backPressedTime = tempTime;
                 Toast.makeText(getApplicationContext(), "한번 더누르면 어플을 종료합니다.", Toast.LENGTH_SHORT).show();

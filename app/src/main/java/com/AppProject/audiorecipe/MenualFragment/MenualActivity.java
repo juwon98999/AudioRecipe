@@ -57,10 +57,5 @@ public class MenualActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onBackPressed() {
-
-        return;
-    }
 
 }
